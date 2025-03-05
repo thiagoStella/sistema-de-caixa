@@ -49,9 +49,12 @@ def mostrar_parcial():
     print(f"\nSub-Total: {cesta}")
     print("="*50)
 
+    #TODO: mostrar a quantidade de itens em um campo unico
+
 def finalizar_compra():
     print(f"Valor a ser cobrado: R${cesta}")
     input("dinheiro ou cartão?")
+    #feito para simular a forma de pagamento 
 
 def main():
     global cesta, quantidade, listagem
