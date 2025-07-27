@@ -178,6 +178,37 @@ Pontos Fortes: Proatividade, curiosidade, pensamento estratégico, perseverança
 ### 6.3. Custos Hipotéticos (Valor da Mão de Obra)
 Se este projeto fosse desenvolvido por um desenvolvedor júnior (considerando R25−R45/hora no mercado brasileiro), o custo estimado da mão de obra para este protótipo local seria de R$ 1.500 a R$ 4.050.
 
+### 6.4. Acompanhamento das Sprints (Checklist)
+
+Este checklist será atualizado a cada commit para refletir o progresso das sprints.
+
+#### **Fase 1: Fundação e Planejamento (1 Sprint)**
+- [x] **Sprint 1:** Revisar e consolidar `README.md` com o esquema DB e adicionar esta seção de gerenciamento.
+
+#### **Fase 2: Construção do Backend (Lógica Pura Python + SQLite) (27 Sprints)**
+##### 2.1. Implementação do Core (Classes POO e Conexão DB):
+- [ ] **Sprint 2-4:** `src/database.py` - Conexão SQLite e funções para criar tabelas (`CREATE TABLE`).
+- [ ] **Sprint 5-7:** `src/models.py` - Definição das classes POO (`Produto`, `Venda`, `ItemVenda`).
+- [ ] **Sprint 8-11:** `src/repository.py` - Criação da camada de acesso a dados (`save`, `get`, `all`).
+- [ ] **Sprint 12:** Testes iniciais no console para `ProdutoRepository`.
+##### 2.2. Lógica Refatorada do Operador (Core do Sistema de Caixa):
+- [ ] **Sprint 13-15:** Refatorar a função `registrar_produto()` para usar a classe `Produto` e `ProdutoRepository`.
+- [ ] **Sprint 16-18:** Refatorar `remover_produto()` para usar a classe `Produto` e `ProdutoRepository`.
+- [ ] **Sprint 19-21:** Refatorar `mostrar_parcial()` e `finalizar_compra()` para interagir com `Venda` e `ItemVenda`.
+- [ ] **Sprint 22-23:** Integrar o loop principal (`main`) com as novas funções POO/DB.
+##### 2.3. Lógica Refatorada do Dono (Gerenciamento Básico):
+- [ ] **Sprint 24-25:** Implementar a lógica da senha para a aba administrativa.
+- [ ] **Sprint 26-28:** Implementar a lógica de gerenciamento de produtos (adicionar/editar/remover) via terminal.
+
+#### **Fase 3: Construção das Interfaces (Frontend - Tkinter) (16 Sprints)**
+##### 3.1. Interface do Operador (Tela Principal de Venda):
+- [ ] **Sprint 29-31:** Setup básico do Tkinter, criação da janela principal e layout da tela de venda.
+- [ ] **Sprint 32-35:** Integrar os botões para adicionar/remover produtos, exibir no Tkinter.
+- [ ] **Sprint 36-38:** Implementar a tela de pagamento e finalização da venda no Tkinter.
+##### 3.2. Interface do Dono (Aba Administrativa):
+- [ ] **Sprint 39-41:** Layout da aba administrativa, proteção por senha e navegação.
+- [ ] **Sprint 42-44:** Formulários Tkinter para adicionar/editar produtos, listagem de produtos.
+
 ## 7. Contato / Autor
 ### Desenvolvido por: Thiago Stella Pontes
 
