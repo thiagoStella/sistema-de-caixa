@@ -62,7 +62,7 @@ def main():
         opcao = menu()
         if opcao == "r":
             registrar_produto()
-        if opcao == "x":
+        elif opcao == "x":
             remover_produto()
         elif opcao == "p":
             mostrar_parcial()
