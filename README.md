@@ -169,9 +169,9 @@ Pontos Fortes: Proatividade, curiosidade, pensamento estratégico, perseverança
 
 ### 6.2. Estimativa de Sprints (Fases)
 #### Fase	Descrição	Sprints Estimados (1h/Sprint)
-- Fase 1: Fundação e Planejamento	Consolidação do Setup e Documentação	1
-- Fase 2: Backend (Lógica Pura + SQLite)	Modelos POO, Repositórios, Lógica de Negócio	27
-- Fase 3: Interfaces (Tkinter)	Interface do Operador e Dono	16
+- Fase 1: Fundação e Planejamento	Consolidação do Setup e Documentação
+- Fase 2: Backend (Lógica Pura + SQLite)	Modelos POO, Repositórios, Lógica de Negócio
+- Fase 3: Interfaces (Tkinter)	Interface do Operador e Dono
 ### Total Estimado (Protótipo Inicial)	~44 horas	44 Sprints
 
 
@@ -187,7 +187,7 @@ Este checklist será atualizado a cada commit para refletir o progresso das spri
 
 #### **Fase 2: Construção do Backend (Lógica Pura Python + SQLite) (27 Sprints)**
 ##### 2.1. Implementação do Core (Classes POO e Conexão DB):
-- [ ] **Sprint 2-4:** `src/database.py` - Conexão SQLite e funções para criar tabelas (`CREATE TABLE`).
+- [x] **Sprint 2-4:** `src/database.py` - Conexão SQLite e funções para criar tabelas (`CREATE TABLE`).
 - [ ] **Sprint 5-7:** `src/models.py` - Definição das classes POO (`Produto`, `Venda`, `ItemVenda`).
 - [ ] **Sprint 8-11:** `src/repository.py` - Criação da camada de acesso a dados (`save`, `get`, `all`).
 - [ ] **Sprint 12:** Testes iniciais no console para `ProdutoRepository`.
