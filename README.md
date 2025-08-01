@@ -188,7 +188,7 @@ Este checklist será atualizado a cada commit para refletir o progresso das spri
 #### **Fase 2: Construção do Backend (Lógica Pura Python + SQLite) (27 Sprints)**
 ##### 2.1. Implementação do Core (Classes POO e Conexão DB):
 - [x] **Sprint 2-4:** `src/database.py` - Conexão SQLite e funções para criar tabelas (`CREATE TABLE`).
-- [ ] **Sprint 5-7:** `src/models.py` - Definição das classes POO (`Produto`, `Venda`, `ItemVenda`).
+- [x] **Sprint 5-7:** `src/models.py` - Definição das classes POO (`Produto`, `Venda`, `ItemVenda`).
 - [ ] **Sprint 8-11:** `src/repository.py` - Criação da camada de acesso a dados (`save`, `get`, `all`).
 - [ ] **Sprint 12:** Testes iniciais no console para `ProdutoRepository`.
 ##### 2.2. Lógica Refatorada do Operador (Core do Sistema de Caixa):
