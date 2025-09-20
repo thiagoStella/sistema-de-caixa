@@ -135,14 +135,79 @@ def gerenciar_produtos():
         if opcao_admin == 'a':
             registrar_produto() 
         elif opcao_admin == 'e':
-            print("Funcionalidade 'Editar' ainda não implementada.")
-            # Ainda para implementar
+            editar_produto()
         elif opcao_admin == 'd':
             remover_produto()
         elif opcao_admin == 'v':
             break # Volta ao menu principal
         else:
             print("Opção inválida, tente novamente.")
+
+def editar_produto():
+    """
+    Permite ao dono editar as informações de um produto existente.
+    """
+    produto_repo = ProdutoRepository()
+    
+    # Lista todos os produtos para que o usuário saiba qual ID escolher
+    produtos = produto_repo.get_all()
+    if not produtos:
+        print("Nenhum produto cadastrado para editar.")
+        return
+
+    print("="*50)
+    print("PRODUTOS PARA EDIÇÃO:")
+    for p in produtos:
+        print(f"- [ID: {p.id}] Nome: {p.nome} | Preço: R${p.preco:.2f} | Estoque: {p.estoque} | Tipo: {p.tipo_unidade}")
+    print("="*50)
+
+    try:
+        produto_id = int(input("Digite o ID do produto para editar: "))
+    except ValueError:
+        print("Entrada inválida. Digite um número.")
+        return
+
+    # Busca o produto pelo ID para ter os dados atuais
+    produto = produto_repo.get_by_id(produto_id)
+    if not produto:
+        print("Produto não encontrado.")
+        return
+
+    print(f"Produto selecionado: {produto.nome}")
+    print("Deixe o campo em branco para manter o valor atual.")
+
+    # Pede as novas informações, dando a opção de manter a atual
+    novo_nome = input(f"Novo nome ({produto.nome}): ").strip()
+    novo_preco_str = input(f"Novo preço ({produto.preco}): ").strip()
+    novo_tipo = input(f"Novo tipo de unidade ({produto.tipo_unidade}): ").upper().strip()
+    novo_estoque_str = input(f"Novo estoque ({produto.estoque}): ").strip()
+
+    # Atualiza o objeto Produto com as novas informações se forem fornecidas
+    if novo_nome:
+        produto.nome = novo_nome
+    if novo_preco_str:
+        try:
+            novo_preco = float(novo_preco_str.replace(',', '.'))
+            produto.preco = novo_preco
+        except ValueError:
+            print("Valor do preço inválido. O preço não foi alterado.")
+            return
+    if novo_tipo:
+        if novo_tipo not in ["UNIDADE", "KG"]:
+            print("Tipo de unidade inválido. O tipo não foi alterado.")
+            return
+        produto.tipo_unidade = novo_tipo
+    if novo_estoque_str:
+        try:
+            novo_estoque = int(novo_estoque_str)
+            produto.estoque = novo_estoque
+        except ValueError:
+            print("Valor do estoque inválido. O estoque não foi alterado.")
+            return
+
+    # Salva o objeto Produto atualizado no banco de dados
+    produto_repo.save(produto)
+    print(f"\nProduto '{produto.nome}' atualizado com sucesso!")
 
 def mostrar_parcial():
     """
