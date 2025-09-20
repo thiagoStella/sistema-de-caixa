@@ -194,10 +194,10 @@ Este checklist será atualizado a cada commit para refletir o progresso das spri
 ##### 2.2. Lógica Refatorada do Operador (Core do Sistema de Caixa):
 - [x] **Sprint 13-15:** Refatorar a função `registrar_produto()` para usar a classe `Produto` e `ProdutoRepository`.
 - [x] **Sprint 16-18:** Refatorar `remover_produto()` para usar a classe `Produto` e `ProdutoRepository`.
-- [ ] **Sprint 19-21:** Refatorar `mostrar_parcial()` e `finalizar_compra()` para interagir com `Venda` e `ItemVenda`.
-- [ ] **Sprint 22-23:** Integrar o loop principal (`main`) com as novas funções POO/DB.
+- [x] **Sprint 19-21:** Refatorar `mostrar_parcial()` e `finalizar_compra()` para interagir com `Venda` e `ItemVenda`.
+- [x] **Sprint 22-23:** Integrar o loop principal (`main`) com as novas funções POO/DB.
 ##### 2.3. Lógica Refatorada do Dono (Gerenciamento Básico):
-- [ ] **Sprint 24-25:** Implementar a lógica da senha para a aba administrativa.
+- [x] **Sprint 24-25:** Implementar a lógica da senha para a aba administrativa.
 - [ ] **Sprint 26-28:** Implementar a lógica de gerenciamento de produtos (adicionar/editar/remover) via terminal.
 
 #### **Fase 3: Construção das Interfaces (Frontend - Tkinter) (16 Sprints)**

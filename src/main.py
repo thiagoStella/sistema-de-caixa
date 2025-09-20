@@ -12,10 +12,10 @@ def menu():
     """
     menu_opcao = """
     ========== MENU ==========
-    [C] Cadastrar produto
-    [X] Remover produto
+    [R] Adicionar produto à venda
     [P] Parcial
     [F] Finalizar compra
+    [G] Gerenciar produtos
     [S] Sair
     ==========================
     """
@@ -66,6 +66,7 @@ def registrar_produto():
     print("="*50)
 
 def remover_produto():
+
     """
     Refatora a função original para remover um produto do banco de dados.
     """
@@ -107,6 +108,41 @@ def remover_produto():
             print(f"Erro ao remover produto '{produto_a_remover.nome}'.")
     else:
         print("Operação cancelada.")
+
+def gerenciar_produtos():
+    """
+    Menu e lógica para o dono gerenciar os produtos.
+    """
+    senha = input("Digite a senha de acesso para o modo administrativo: ")
+    SENHA_ADMIN = "admin"
+
+    if senha != SENHA_ADMIN:
+        print("Senha incorreta. Acesso negado.")
+        return
+
+    # Se a senha estiver correta, exibe o menu administrativo
+    while True:
+        menu_admin = """
+        ==== MENU ADMINISTRATIVO ====
+        [A] Adicionar novo produto
+        [E] Editar produto
+        [D] Deletar produto
+        [V] Voltar ao menu principal
+        =============================
+        """
+        opcao_admin = input(menu_admin).lower()
+
+        if opcao_admin == 'a':
+            registrar_produto() 
+        elif opcao_admin == 'e':
+            print("Funcionalidade 'Editar' ainda não implementada.")
+            # Ainda para implementar
+        elif opcao_admin == 'd':
+            remover_produto()
+        elif opcao_admin == 'v':
+            break # Volta ao menu principal
+        else:
+            print("Opção inválida, tente novamente.")
 
 def mostrar_parcial():
     """
@@ -236,14 +272,14 @@ def main():
     while True:
         opcao = menu()
         
-        if opcao == "c":
+        if opcao == "r":
             adicionar_produto_a_venda() 
-        elif opcao == "x":
-            remover_produto()
         elif opcao == "p":
             mostrar_parcial()
         elif opcao == "f":
             finalizar_compra()
+        elif opcao == "g":
+            gerenciar_produtos()
         elif opcao == "s":
             print("Encerrando o sistema...")
             sys.exit(0)
