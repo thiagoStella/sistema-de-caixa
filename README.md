@@ -204,7 +204,7 @@ Este checklist será atualizado a cada commit para refletir o progresso das spri
 ##### 3.1. Interface do Operador (Tela Principal de Venda):
 - [x] **Sprint 29-31:** Setup básico do Tkinter, criação da janela principal e layout da tela de venda.
 - [x] **Sprint 32-35:** Integrar os botões para adicionar/remover produtos, exibir no Tkinter.
-- [ ] **Sprint 36-38:** Implementar a tela de pagamento e finalização da venda no Tkinter.
+- [x] **Sprint 36-38:** Implementar a tela de pagamento e finalização da venda no Tkinter.
 ##### 3.2. Interface do Dono (Aba Administrativa):
 - [ ] **Sprint 39-41:** Layout da aba administrativa, proteção por senha e navegação.
 - [ ] **Sprint 42-44:** Formulários Tkinter para adicionar/editar produtos, listagem de produtos.
