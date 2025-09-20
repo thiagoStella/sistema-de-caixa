@@ -4,13 +4,15 @@ from .database import create_tables
 from .repository import ProdutoRepository, VendaRepository
 from .models import Produto, Venda, ItemVenda
 
+venda_atual = None
+
 def menu():
     """
     Exibe o menu principal do sistema e captura a opção do usuário.
     """
     menu_opcao = """
     ========== MENU ==========
-    [R] Registrar produto
+    [C] Cadastrar produto
     [X] Remover produto
     [P] Parcial
     [F] Finalizar compra
@@ -105,20 +107,143 @@ def remover_produto():
             print(f"Erro ao remover produto '{produto_a_remover.nome}'.")
     else:
         print("Operação cancelada.")
+
+def mostrar_parcial():
+    """
+    Mostra os itens adicionados à venda em andamento e o total parcial.
+    """
+    global venda_atual
+    
+    if not venda_atual or not venda_atual.itens:
+        print("A venda encontra-se vazia.")
+        return
+
+    print("=" * 50)
+    print("RESUMO DA VENDA:")
+    for i, item in enumerate(venda_atual.itens):
+        print(f"{i + 1}. {item.produto.nome}: \tR$ {item.subtotal:.2f}")
+    
+    print("-" * 50)
+    print(f"Sub-Total: R${venda_atual.total:.2f}")
+    print("=" * 50)
+    
+def finalizar_compra():
+    """
+    Finaliza a venda em andamento, atualiza o estoque e salva no banco de dados.
+    """
+    global venda_atual
+    venda_repo = VendaRepository()
+    produto_repo = ProdutoRepository()
+    
+    if not venda_atual or not venda_atual.itens:
+        print("Não há itens para finalizar a compra.")
+        return
+
+    print("=" * 50)
+    print(f"Valor a ser cobrado: R${venda_atual.total:.2f}")
+    
+    tipo_pagamento = input("Tipo de pagamento (DINHEIRO/CARTAO/PIX): ").upper()
+    if tipo_pagamento not in ["DINHEIRO", "CARTAO", "PIX"]:
+        print("Tipo de pagamento inválido.")
+        return
         
+    venda_atual.status = "FINALIZADA"
+    venda_atual.tipo_pagamento = tipo_pagamento
+
+    # Atualiza o estoque no banco de dados para cada item da venda
+    print("Atualizando estoque...")
+    for item in venda_atual.itens:
+        produto = produto_repo.get_by_id(item.produto.id)
+        if produto:
+            try:
+                produto.atualizar_estoque(-item.quantidade)
+                produto_repo.save(produto)
+            except ValueError as e:
+                print(f"Erro ao atualizar estoque do produto '{produto.nome}': {e}")
+                # Em um sistema real, aqui você cancelaria a transação e informaria ao usuário.
+
+    # Salva a venda e seus itens no banco de dados
+    venda_repo.save(venda_atual)
+    
+    print("\nCompra finalizada com sucesso!")
+    print("=" * 50)
+
+    # Limpa a venda atual para uma nova transação
+    venda_atual = Venda()
+
+def adicionar_produto_a_venda():
+    """
+    Função para adicionar um produto existente no banco de dados à venda em andamento.
+    """
+    global venda_atual
+    produto_repo = ProdutoRepository()
+    
+    # Exibe todos os produtos do banco para o usuário escolher
+    produtos = produto_repo.get_all()
+    if not produtos:
+        print("Nenhum produto cadastrado para adicionar à venda.")
+        return
+
+    print("="*50)
+    print("PRODUTOS DISPONÍVEIS:")
+    for p in produtos:
+        print(f"- [ID: {p.id}] Nome: {p.nome} | Preço: R${p.preco:.2f} | Estoque: {p.estoque}")
+    print("="*50)
+    
+    try:
+        produto_id = int(input("Digite o ID do produto para adicionar à venda: "))
+        quantidade = float(input("Digite a quantidade: "))
+    except ValueError:
+        print("Entrada inválida. Digite números para ID e quantidade.")
+        return
+        
+    produto_selecionado = produto_repo.get_by_id(produto_id)
+    if not produto_selecionado:
+        print("ID de produto não encontrado.")
+        return
+
+    try:
+        # A validação de estoque está no método da classe Produto
+        if quantidade <= 0 or quantidade > produto_selecionado.estoque:
+            raise ValueError("Quantidade inválida ou insuficiente em estoque.")
+            
+        # Cria um objeto ItemVenda e o adiciona à Venda em andamento
+        item_venda = ItemVenda(
+            produto=produto_selecionado, 
+            quantidade=quantidade,
+            preco_unitario_na_venda=produto_selecionado.preco # Salva o preço atual
+        )
+        
+        venda_atual.adicionar_item(item_venda)
+        print(f"'{produto_selecionado.nome}' adicionado à venda. Subtotal: R${item_venda.subtotal:.2f}")
+    except ValueError as e:
+        print(f"Erro: {e}")
+
+
+
+
+
+# O restante do seu main.py, agora completo.
 def main():
     """
     Loop principal do sistema de caixa.
     """
     create_tables()
     
+    global venda_atual
+    venda_atual = Venda()
+
     while True:
         opcao = menu()
         
-        if opcao == "r":
-            registrar_produto()
-        elif opcao == "x":  # Adicionando a nova opção para remover
+        if opcao == "c":
+            adicionar_produto_a_venda() 
+        elif opcao == "x":
             remover_produto()
+        elif opcao == "p":
+            mostrar_parcial()
+        elif opcao == "f":
+            finalizar_compra()
         elif opcao == "s":
             print("Encerrando o sistema...")
             sys.exit(0)
