@@ -206,8 +206,8 @@ Este checklist será atualizado a cada commit para refletir o progresso das spri
 - [x] **Sprint 32-35:** Integrar os botões para adicionar/remover produtos, exibir no Tkinter.
 - [x] **Sprint 36-38:** Implementar a tela de pagamento e finalização da venda no Tkinter.
 ##### 3.2. Interface do Dono (Aba Administrativa):
-- [ ] **Sprint 39-41:** Layout da aba administrativa, proteção por senha e navegação.
-- [ ] **Sprint 42-44:** Formulários Tkinter para adicionar/editar produtos, listagem de produtos.
+- [x] **Sprint 39-41:** Layout da aba administrativa, proteção por senha e navegação.
+- [x] **Sprint 42-44:** Formulários Tkinter para adicionar/editar produtos, listagem de produtos.
 
 ## 7. Contato / Autor
 ### Desenvolvido por: Thiago Stella Pontes

@@ -2,6 +2,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+from src.gui.admin_window import AdminWindow
 
 # Importa as classes e repositórios do backend
 from src.models import Produto, Venda, ItemVenda
