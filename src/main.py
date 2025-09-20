@@ -1,118 +1,129 @@
 # src/main.py
-
-from .models import Produto, Venda, ItemVenda
+import sys
+from .database import create_tables
 from .repository import ProdutoRepository, VendaRepository
-from .database import create_tables # Precisamos disso para garantir que as tabelas existem!
+from .models import Produto, Venda, ItemVenda
 
-def main():
-    print("Iniciando o sistema de caixa...")
+def menu():
+    """
+    Exibe o menu principal do sistema e captura a opção do usuário.
+    """
+    menu_opcao = """
+    ========== MENU ==========
+    [R] Registrar produto
+    [X] Remover produto
+    [P] Parcial
+    [F] Finalizar compra
+    [S] Sair
+    ==========================
+    """
+    return input(menu_opcao).lower()
+
+def registrar_produto():
+    """
+    Refatora a função original para usar a classe Produto e o ProdutoRepository.
+    Permite registrar um novo produto no banco de dados.
+    """
+    nome = input("Digite o nome do produto: ").strip()
+    if not nome:
+        print("Nome do produto não pode ser vazio.")
+        return
+
+    try:
+        preco_input = input("Digite o valor do produto: ")
+        # Substitui a vírgula por ponto para o float funcionar em pt-br
+        preco = float(preco_input.replace(',', '.')) 
+        if preco <= 0:
+            print("O preço deve ser maior que zero.")
+            return
+
+        tipo_unidade_input = input("Tipo de unidade (UNIDADE/KG): ").upper()
+        if tipo_unidade_input not in ["UNIDADE", "KG"]:
+            print("Tipo de unidade inválido. Use 'UNIDADE' ou 'KG'.")
+            return
+            
+        estoque = int(input("Digite a quantidade em estoque: "))
+        if estoque < 0:
+            print("Estoque não pode ser negativo.")
+            return
+
+    except ValueError:
+        print("Entrada inválida. Certifique-se de digitar números para preço e estoque.")
+        return
     
-    # 1. Garante que as tabelas existem
-    create_tables()
-
-    # Instanciando nossos repositórios
     produto_repo = ProdutoRepository()
-    venda_repo = VendaRepository()
-
-    print("\n--- Testando CRUD de Produto ---")
-
-    # C (Create): Inserindo novos produtos
-    arroz = Produto(nome="Arroz Agulha 5kg", preco=25.00, tipo_unidade="UNIDADE", estoque=100)
-    feijao = Produto(nome="Feijao Preto 1kg", preco=8.50, tipo_unidade="UNIDADE", estoque=150)
-    banana = Produto(nome="Banana Nanica KG", preco=7.90, tipo_unidade="KG", estoque=50)
-
-    # O método save() vai atribuir o ID do banco ao objeto!
-    arroz = produto_repo.save(arroz)
-    feijao = produto_repo.save(feijao)
-    banana = produto_repo.save(banana)
-    print(f"Produtos salvos com ID: {arroz.id}, {feijao.id}, {banana.id}")
-
-    # R (Read): Buscando produtos
-    produto_buscado_por_id = produto_repo.get_by_id(arroz.id)
-    print(f"\nProduto buscado por ID ({arroz.id}): {produto_buscado_por_id}")
-
-    produto_buscado_por_nome = produto_repo.get_by_name("Arroz") # Testando busca por nome parcial/case-insensitive
-    print(f"Produto buscado por nome ('Arroz'): {produto_buscado_por_nome}")
     
-    # U (Update): Atualizando um produto (estoque do arroz)
-    if produto_buscado_por_id:
-        print(f"\nEstoque do Arroz antes da venda: {produto_buscado_por_id.estoque}")
-        produto_buscado_por_id.atualizar_estoque(-5) # Vende 5 unidades
-        produto_repo.save(produto_buscado_por_id) # Salva a alteração no banco
-        print(f"Estoque do Arroz depois da venda (atualizado no banco): {produto_buscado_por_id.estoque}")
+    # 1. Cria um objeto Produto a partir das entradas do usuário
+    novo_produto = Produto(nome=nome, preco=preco, tipo_unidade=tipo_unidade_input, estoque=estoque)
 
-    # R (Read All): Listando todos os produtos
-    todos_produtos = produto_repo.get_all()
-    print("\nTodos os produtos no banco:")
-    for p in todos_produtos:
-        print(f"  - {p}")
+    # 2. Usa o Repositório para salvar o objeto no banco de dados
+    produto_repo.save(novo_produto)
+    
+    print("Produto registrado com sucesso!")
+    print(f"ID do produto: {novo_produto.id}")
+    print("="*50)
 
-    # D (Delete): Removendo um produto (cuidado com IDs usados em vendas!)
-    # Vamos criar um produto temporário para deletar
-    lixo = Produto(nome="Produto Lixo", preco=1.00, tipo_unidade="UNIDADE", estoque=1)
-    lixo = produto_repo.save(lixo)
-    print(f"\nProduto Lixo criado com ID: {lixo.id}")
-    if produto_repo.delete(lixo.id):
-        print(f"Produto com ID {lixo.id} (Produto Lixo) deletado com sucesso.")
+def remover_produto():
+    """
+    Refatora a função original para remover um produto do banco de dados.
+    """
+    produto_repo = ProdutoRepository()
+    
+    # Busca e exibe todos os produtos para o usuário escolher
+    produtos = produto_repo.get_all()
+    if not produtos:
+        print("Nenhum produto cadastrado.")
+        return
+
+    print("="*50)
+    print("LISTA DE PRODUTOS CADASTRADOS:")
+    for p in produtos:
+        print(f"- [ID: {p.id}] Nome: {p.nome} | Preço: R${p.preco:.2f} | Estoque: {p.estoque}")
+    print("="*50)
+
+    try:
+        produto_id = int(input("Digite o ID do produto que deseja remover (0 para cancelar): "))
+    except ValueError:
+        print("Entrada inválida. Digite um número.")
+        return
+
+    if produto_id == 0:
+        print("Operação cancelada.")
+        return
+
+    # Busca o produto no banco de dados para confirmar a existência
+    produto_a_remover = produto_repo.get_by_id(produto_id)
+    if not produto_a_remover:
+        print("ID de produto não encontrado. Por favor, tente novamente.")
+        return
+        
+    confirmacao = input(f"Tem certeza que deseja remover '{produto_a_remover.nome}'? (S/N): ").lower()
+    if confirmacao == 's':
+        if produto_repo.delete(produto_id):
+            print(f"Produto '{produto_a_remover.nome}' removido com sucesso do banco de dados.")
+        else:
+            print(f"Erro ao remover produto '{produto_a_remover.nome}'.")
     else:
-        print(f"Falha ao deletar Produto com ID {lixo.id}.")
+        print("Operação cancelada.")
+        
+def main():
+    """
+    Loop principal do sistema de caixa.
+    """
+    create_tables()
     
-    # Verifica se realmente foi deletado
-    if not produto_repo.get_by_id(lixo.id):
-        print(f"Confirmação: Produto com ID {lixo.id} não encontrado após exclusão.")
-
-
-    print("\n--- Testando CRUD de Venda ---")
-
-    # C (Create): Criando uma nova venda
-    venda_nova = Venda()
-    # Adicionando itens à venda em memória (usando os produtos que já têm ID do banco)
-    item_venda1 = ItemVenda(produto=arroz, quantidade=2, preco_unitario_na_venda=arroz.preco)
-    item_venda2 = ItemVenda(produto=feijao, quantidade=1, preco_unitario_na_venda=feijao.preco)
-    venda_nova.adicionar_item(item_venda1)
-    venda_nova.adicionar_item(item_venda2)
-    venda_nova.status = "FINALIZADA"
-    venda_nova.tipo_pagamento = "DINHEIRO"
-    
-    venda_nova = venda_repo.save(venda_nova) # Salva a venda e seus itens no banco
-    print(f"\nVenda criada e salva com ID: {venda_nova.id}, Total: R${venda_nova.total:.2f}")
-
-
-    # R (Read): Buscando uma venda por ID (com seus itens)
-    venda_buscada = venda_repo.get_by_id(venda_nova.id)
-    if venda_buscada:
-        print(f"\nVenda buscada por ID ({venda_nova.id}): {venda_buscada}")
-        print("Itens da venda buscada:")
-        for item in venda_buscada.itens:
-            print(f"  - {item.produto.nome} (Qtd: {item.quantidade}) - Subtotal: R${item.subtotal:.2f}")
-    else:
-        print(f"Venda com ID {venda_nova.id} não encontrada.")
-
-    # Criando outra venda para ter mais dados para 'get_all'
-    outra_venda = Venda()
-    item_venda3 = ItemVenda(produto=banana, quantidade=0.5, preco_unitario_na_venda=banana.preco)
-    outra_venda.adicionar_item(item_venda3)
-    outra_venda.status = "FINALIZADA"
-    outra_venda.tipo_pagamento = "CARTAO"
-    outra_venda = venda_repo.save(outra_venda)
-    print(f"Outra venda criada e salva com ID: {outra_venda.id}")
-
-    # R (Read All): Listando todas as vendas
-    todas_vendas = venda_repo.get_all()
-    print("\nTodas as vendas no banco:")
-    for v in todas_vendas:
-        print(f"  - {v}")
-
-    # D (Delete): Removendo uma venda
-    if venda_repo.delete(outra_venda.id):
-        print(f"\nVenda com ID {outra_venda.id} e seus itens deletados com sucesso.")
-    else:
-        print(f"\nFalha ao deletar Venda com ID {outra_venda.id}.")
-    
-    # Verifica se realmente foi deletada
-    if not venda_repo.get_by_id(outra_venda.id):
-        print(f"Confirmação: Venda com ID {outra_venda.id} não encontrada após exclusão.")
-
+    while True:
+        opcao = menu()
+        
+        if opcao == "r":
+            registrar_produto()
+        elif opcao == "x":  # Adicionando a nova opção para remover
+            remover_produto()
+        elif opcao == "s":
+            print("Encerrando o sistema...")
+            sys.exit(0)
+        else:
+            print("Opção inválida, tente novamente!")
 
 if __name__ == "__main__":
     main()
