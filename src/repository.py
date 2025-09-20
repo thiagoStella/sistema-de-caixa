@@ -7,6 +7,10 @@ import datetime
 
 # ... o resto do seu código
 
+# src/repository.py
+
+# ... outros imports ...
+
 class ProdutoRepository:
     """
     Repositório para operações de CRUD (Create, Read, Update, Delete)
@@ -21,17 +25,17 @@ class ProdutoRepository:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        if produto.id: # Se o produto já tem ID, é uma atualização (UPDATE)
+        if produto.id:
             cursor.execute("""
                 UPDATE produtos SET nome = ?, preco = ?, tipo_unidade = ?, estoque = ?
                 WHERE id = ?
             """, (produto.nome, produto.preco, produto.tipo_unidade, produto.estoque, produto.id))
-        else: # Se não tem ID, é uma nova inserção (INSERT)
+        else:
             cursor.execute("""
                 INSERT INTO produtos (nome, preco, tipo_unidade, estoque)
                 VALUES (?, ?, ?, ?)
             """, (produto.nome, produto.preco, produto.tipo_unidade, produto.estoque))
-            produto.id = cursor.lastrowid # Pega o ID gerado automaticamente pelo banco
+            produto.id = cursor.lastrowid
 
         conn.commit()
         conn.close()
@@ -45,11 +49,10 @@ class ProdutoRepository:
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT id, nome, preco, tipo_unidade, estoque FROM produtos WHERE id = ?", (produto_id,))
-        row = cursor.fetchone() # Pega a primeira linha do resultado
+        row = cursor.fetchone()
         conn.close()
         
         if row:
-            # Cria um objeto Produto a partir dos dados do banco
             return Produto(id=row['id'], nome=row['nome'], preco=row['preco'], 
                             tipo_unidade=row['tipo_unidade'], estoque=row['estoque'])
         return None
@@ -61,10 +64,8 @@ class ProdutoRepository:
         """
         conn = get_db_connection()
         cursor = conn.cursor()
-        # Usamos LIKE para busca flexível, e '%' para "qualquer coisa antes/depois"
-        # O LOWER() converte para minúsculas para uma busca case-insensitive
         cursor.execute("SELECT id, nome, preco, tipo_unidade, estoque FROM produtos WHERE LOWER(nome) LIKE ?", ('%' + produto_name.lower() + '%',))
-        row = cursor.fetchone() # Pega a primeira linha que corresponder
+        row = cursor.fetchone()
         conn.close()
         
         if row:
@@ -80,7 +81,7 @@ class ProdutoRepository:
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT id, nome, preco, tipo_unidade, estoque FROM produtos ORDER BY nome")
-        rows = cursor.fetchall() # Pega todas as linhas do resultado
+        rows = cursor.fetchall()
         conn.close()
         
         produtos = []
@@ -97,10 +98,10 @@ class ProdutoRepository:
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("DELETE FROM produtos WHERE id = ?", (produto_id,))
-        rows_affected = cursor.rowcount # Quantas linhas foram afetadas (deletadas)
+        rows_affected = cursor.rowcount
         conn.commit()
         conn.close()
-        return rows_affected > 0 # Retorna True se 1 ou mais linhas foram deletadas
+        return rows_affected > 0
 
 # --------------------------------------------------------------------------------------
 

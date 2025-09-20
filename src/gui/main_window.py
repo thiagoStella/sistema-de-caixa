@@ -38,7 +38,7 @@ class MainWindow:
         self.input_frame = ttk.Frame(self.main_frame)
         self.input_frame.grid(row=0, column=0, columnspan=2, sticky="ew")
 
-        ttk.Label(self.input_frame, text="ID do Produto:").grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        ttk.Label(self.input_frame, text="Nome do Produto:").grid(row=0, column=0, padx=5, pady=5, sticky="w")
         self.produto_id_entry = ttk.Entry(self.input_frame, width=15)
         self.produto_id_entry.grid(row=0, column=1, padx=5, pady=5)
         self.produto_id_entry.focus()
@@ -54,6 +54,7 @@ class MainWindow:
         ttk.Button(self.button_frame, text="Adicionar", command=self.adicionar_item_a_venda).grid(row=0, column=0, padx=5)
         ttk.Button(self.button_frame, text="Remover", command=self.remover_item_da_venda).grid(row=0, column=1, padx=5)
         ttk.Button(self.button_frame, text="Finalizar", command=self.finalizar_venda).grid(row=0, column=2, padx=5)
+        ttk.Button(self.button_frame, text="Administrador", command=lambda: AdminWindow(self.root)).grid(row=0, column=3, padx=5)
         
         # Lista de itens da venda (Treeview)
         self.venda_treeview = ttk.Treeview(self.main_frame, columns=("id", "nome", "qtd", "subtotal"), show="headings")
@@ -70,13 +71,14 @@ class MainWindow:
         # Define os métodos
     def adicionar_item_a_venda(self):
         try:
-            produto_id = int(self.produto_id_entry.get())
+            # Obtém o nome e a quantidade do produto
+            produto_nome = self.produto_id_entry.get().strip()
             quantidade = float(self.quantidade_entry.get().replace(',', '.'))
         except (ValueError, tk.TclError):
-            messagebox.showerror("Erro de entrada", "Por favor, insira valores válidos para ID e quantidade.")
+            messagebox.showerror("Erro de entrada", "Por favor, insira um nome e uma quantidade válidos.")
             return
 
-        produto_selecionado = self.produto_repo.get_by_id(produto_id)
+        produto_selecionado = self.produto_repo.get_by_name(produto_nome)
         if not produto_selecionado:
             messagebox.showerror("Erro", "Produto não encontrado.")
             return
@@ -95,7 +97,6 @@ class MainWindow:
             self.update_item_list()
             self.update_total()
 
-            # Limpa os campos de entrada
             self.produto_id_entry.delete(0, tk.END)
             self.quantidade_entry.delete(0, tk.END)
             self.produto_id_entry.focus()
