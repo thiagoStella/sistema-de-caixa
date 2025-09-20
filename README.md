@@ -198,12 +198,12 @@ Este checklist será atualizado a cada commit para refletir o progresso das spri
 - [x] **Sprint 22-23:** Integrar o loop principal (`main`) com as novas funções POO/DB.
 ##### 2.3. Lógica Refatorada do Dono (Gerenciamento Básico):
 - [x] **Sprint 24-25:** Implementar a lógica da senha para a aba administrativa.
-- [ ] **Sprint 26-28:** Implementar a lógica de gerenciamento de produtos (adicionar/editar/remover) via terminal.
+- [x] **Sprint 26-28:** Implementar a lógica de gerenciamento de produtos (adicionar/editar/remover) via terminal.
 
 #### **Fase 3: Construção das Interfaces (Frontend - Tkinter) (16 Sprints)**
 ##### 3.1. Interface do Operador (Tela Principal de Venda):
-- [ ] **Sprint 29-31:** Setup básico do Tkinter, criação da janela principal e layout da tela de venda.
-- [ ] **Sprint 32-35:** Integrar os botões para adicionar/remover produtos, exibir no Tkinter.
+- [x] **Sprint 29-31:** Setup básico do Tkinter, criação da janela principal e layout da tela de venda.
+- [x] **Sprint 32-35:** Integrar os botões para adicionar/remover produtos, exibir no Tkinter.
 - [ ] **Sprint 36-38:** Implementar a tela de pagamento e finalização da venda no Tkinter.
 ##### 3.2. Interface do Dono (Aba Administrativa):
 - [ ] **Sprint 39-41:** Layout da aba administrativa, proteção por senha e navegação.
